@@ -20,12 +20,16 @@ client.on("ready",() =>{
     console.log('client connected and ready to use ')
 })
 
-client.set("user","utente")// chiave valore
-client.get("user", redis.print)// viene stampato il valore
+// client.set("user","utente")// chiave valore
+// client.get("user", redis.print)// viene stampato il valore
 
-client.set("password","passw")
-client.get("password", redis.print)
+// client.set("password","passw")
+// client.get("password", redis.print)
 
 
 const index = require('./routing/auth')
+const {users} = require('./routing/auth')
 app.use('/',index)
+
+client.set("users",(users[0].id))
+client.get("users", redis.print)
