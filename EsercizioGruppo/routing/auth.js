@@ -4,20 +4,18 @@ var router = express.Router()
 const TokenGenerator = require("uuid-token-generator")
 const Token = new TokenGenerator()
 
-users = [{"username": "prova","password": "prova"}]
+users = []
 
 var checkToken = (req, res, next)=>{
     if (users.find(items=> items.id === req.header("id"))) {
+        // res.json("loggato da prima")
         next()
-    }
-    else{
-        res.status(400).json("token not found")
     }
 }
 
 router.post('/register', ({body},res)=>{
     try {
-        users.push({"username": String(body.username),"password": String(body.password)})
+        users.push({"id":Token.generate(),"username": String(body.username),"password": String(body.password)})
         console.log(users)
         res.json(users)
     } catch (error) {
@@ -27,6 +25,7 @@ router.post('/register', ({body},res)=>{
 })
 
 router.post('/login', ({body},res)=>{
+    checkToken()
     index = users.findIndex(items=> items.username === body.username && items.password === body.password)
     if (index != -1 ) {
         users[index]= {
@@ -34,7 +33,7 @@ router.post('/login', ({body},res)=>{
             "password": users[index].password,
             "id":Token.generate()
         }
-        console.log(users)
+        console.log("porcoddio")
         res.status(201).json(users[index])    
     }
     else{  

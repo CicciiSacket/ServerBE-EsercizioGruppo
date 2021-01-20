@@ -31,5 +31,5 @@ const index = require('./routing/auth')
 const {users} = require('./routing/auth')
 app.use('/',index)
 
-client.set("users",(users[0].id))
-client.get("users", redis.print)
+// client.set("users",(users[0].id))
+// client.get("users", redis.print)
