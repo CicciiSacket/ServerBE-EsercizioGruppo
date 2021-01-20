@@ -1,51 +1,53 @@
-var express = require("express")
-const { check } = require("express-validator")
-var router = express.Router()
-const TokenGenerator = require("uuid-token-generator")
-const Token = new TokenGenerator()
-
+const express = require('express')
+const router = express.Router()
+const TokenGenerator = require('uuid-token-generator');
+const token = new TokenGenerator()
+var redis = require('redis')
+var client = redis.createClient()
+const bluebird = require('bluebird')
+bluebird.promisifyAll(redis.RedisClient.prototype)
 users = []
-
-var checkToken = (req, res, next)=>{
-    if (users.find(items=> items.id === req.header("id"))) {
-        // res.json("loggato da prima")
-        next()
-    }
-}
-
-router.post('/register', ({body},res)=>{
-    try {
-        users.push({"id":Token.generate(),"username": String(body.username),"password": String(body.password)})
-        console.log(users)
-        res.json(users)
-    } catch (error) {
-        res.status(400)
-    }
-    
-})
-
-router.post('/login', ({body},res)=>{
-    checkToken()
-    index = users.findIndex(items=> items.username === body.username && items.password === body.password)
-    if (index != -1 ) {
-        users[index]= {
-            "username": users[index].username,
-            "password": users[index].password,
-            "id":Token.generate()
+router.post('/register', ({body},res) => {
+        var user = {
+            username:body.username,
+            password:body.password,
         }
-        console.log("porcoddio")
-        res.status(201).json(users[index])    
+        users.push(user)
+        res.json({user})
+    })
+router.post("/login",async ({body,headers}, res) =>{
+    if(!headers.token)return res.status(401).json({message: 'token required'})
+    var headerToken = headers.token
+    var index =users.findIndex(item=> item.username == body.username && item.password == body.password)
+    if((index != -1) && (await client.existsAsync(headerToken))){
+        users[index] = {
+            username: users[index].username,
+            password: users[index].password,
+            id: headerToken
+        }
+        client.expire(headerToken, 1200)
+        res.json(users[index])
     }
-    else{  
-        res.status(404).json("user not found")
+    else if((index != -1 && !(await client.existsAsync(headerToken)))){
+    var logInToken = token.generate()
+        users[index] = {
+            username: users[index].username,
+            password: users[index].password,
+            id: logInToken
+        }
+        await client.setAsync(logInToken, users[index].username)
+        client.expire(logInToken, 1200)
+        res.json(users[index])
     }
-    
+    else res.status(404).json("user not found")
 })
-
-router.get('/logout', ({body},res)=>{
-    res.connection.destroy();
-    console.log("close connection")
-})
-
+// var checkTokenHeader = (req,res,next)=>{
+//     const userToken = req.header("id")
+//     if(user.find(item => item.id===userToken)){
+//         next()
+//     }else{
+//         res.status(401).json('not valid')
+//     }
+// }
 module.exports = router
 module.exports.users = users

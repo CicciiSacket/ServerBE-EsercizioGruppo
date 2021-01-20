@@ -1,0 +1,6 @@
+var auth = require('./auth')
+const express =  require('express')
+const bodyParser = require ('body-parser')
+const app = express()
+const redis = require('redis')
+const client = redis.createClient()
