@@ -13,12 +13,15 @@ var checkTokenHeader = async (req,res,next)=>{
         res.status(401).json('not valid')
     }
 }
-
+const errorFormatter = ({msg, param}) => {
+    return `${param}: ${msg}`;
+  };
 var errorHandlers = (req, res, next) => { 
-    const errors = validationResult(req) 
-    if(!errors.isEmpty()){ 
-        return res.status(400).json({errors} )
-    } else {
+    const errors = validationResult(req).formatWith(errorFormatter);
+    if (!errors.isEmpty()) {
+      return res.json({ errors: errors.array() });
+    }
+    else {
         next();
     }
 }

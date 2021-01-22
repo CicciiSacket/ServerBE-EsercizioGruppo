@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 module.exports = app.listen(3005)
 
 
+
 app.use('/auth',index)
 app.use('/products',router)
 
