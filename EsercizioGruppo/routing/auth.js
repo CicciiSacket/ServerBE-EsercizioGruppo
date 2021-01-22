@@ -10,6 +10,7 @@ const bluebird = require('bluebird')
 bluebird.promisifyAll(redis.RedisClient.prototype)
 
 users = []
+
 router.post('/register',body('username').isEmail(),body('password').isLength({ min: 5 }), ({body:{username, password}},res) => {
     var user = {
         username:username,
@@ -18,7 +19,6 @@ router.post('/register',body('username').isEmail(),body('password').isLength({ m
     users.push(user)
     res.json({user})
 })
-
 router.post("/login",async ({body: {username, password},headers:{authorization}}, res) =>{
     var index =users.findIndex(item=> item.username == username && item.password == password)
     if(index == -1) return res.status(404).json("user not found")

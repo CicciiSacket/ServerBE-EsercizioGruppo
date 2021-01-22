@@ -23,5 +23,4 @@ var errorHandlers = (req, res, next) => {
     }
 }
 
-
 module.exports = {checkTokenHeader,errorHandlers}
