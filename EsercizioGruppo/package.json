@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Francesco Sacco",
+  "author": "Francesco Sacco, Andrea Lo Monaco, Sergio Di Bella",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.0",
@@ -15,13 +15,13 @@
     "cors": "^2.8.5",
     "expand-range": "^2.0.2",
     "express": "^4.17.1",
+    "express-validator": "^6.9.2",
     "module": "^1.2.5",
     "mysql": "^2.18.1",
     "node": "^15.4.0",
     "node-fetch": "^2.6.1",
     "nodule": "0.0.6",
     "npm-fetch": "0.0.9",
-    "npm-openweathermap": "0.0.1",
     "path-dirname": "^1.0.2",
     "pinkie-promise": "^2.0.1",
     "preserve": "^0.2.0",
