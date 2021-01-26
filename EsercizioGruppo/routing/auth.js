@@ -13,8 +13,8 @@ users = []
 
 router.post('/register',body('username').isEmail(),body('password').isLength({ min: 5 }), ({body:{username, password}},res) => {
     var user = {
-        username:username,
-        password:password
+        username,
+        password
     }
     users.push(user)
     res.json({user})
